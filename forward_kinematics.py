@@ -14,7 +14,7 @@ def step_trans(par):
     :return: Transition Matrix
     """
     if len(par) != 4:
-        print "par:[alpha_{i-1}(link twist), a_{i-1}(link length), d_i(link offset), theta_i(joint angle)]"
+        print("par:[alpha_{i-1}(link twist), a_{i-1}(link length), d_i(link offset), theta_i(joint angle)]")
         exit()
 
     opts = []
@@ -56,7 +56,6 @@ if __name__ == "__main__":
     theta = np.array([60, 45, 25, 15, -10, -30])
 
     dh[:, 3] = theta
-
 
     print "the input DH matrix:"
     print dh
