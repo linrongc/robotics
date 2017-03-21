@@ -42,13 +42,15 @@ class Planar3D:
         self.l1, self.l2 = l1, l2
         self.theta = np.array([0, 0, 0])
 
-    def inverse_kinematics(self, goal_frame, current_theta, solver=None):
+    def inverse_kinematics(self, goal_frame, current_theta=None, solver=None):
         """
         :param goal_frame: the goal frame
         :param current_theta: current configuration
         :param solver: inverse kinematic solver
         :return: solutions
         """
+        if current_theta is None:
+            current_theta = [0, 0, 0]
         if solver is None:
             solver = self.close_form_inverse
         if goal_frame.shape == (3, 3):  # convert 3*3 frame to 4*4 frame
