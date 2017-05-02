@@ -99,7 +99,7 @@ class PotentialPlanner:
         return path
 
     def get_potential_field(self):
-        ticks = np.linspace(0, 800, 800/self.par_dic["resolution"])
+        ticks = np.linspace(0, 700, 700/self.par_dic["resolution"])
         num_ticks = len(ticks)
         potential = np.zeros((num_ticks, num_ticks), dtype=np.float64)
         for i in range(num_ticks):

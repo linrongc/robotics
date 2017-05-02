@@ -19,7 +19,7 @@ from mpl_toolkits.mplot3d import Axes3D
 class GUI:
     def __init__(self):
         self.root = Tk()
-        self.root.minsize(1000, 820)
+        self.root.minsize(900, 720)
         self.root.title("Potential Field Path Planner")
         self._center(self.root)
         self.var_dic = {}
@@ -74,16 +74,16 @@ class GUI:
         self.label_status = Label(self.main_frame, textvariable=self.status, font=("Courier", 10))
         self.label_status.pack(side=BOTTOM, fill=X)
 
-        self.canvas = MotionCanvas(self.main_frame, 800, 800, gui=self)
+        self.canvas = MotionCanvas(self.main_frame, 700, 700, gui=self)
         self.canvas.pack(side=RIGHT, expand=YES)
 
-        self.config_frame = Frame(self.main_frame, width=200, height=800)
+        self.config_frame = Frame(self.main_frame, width=200, height=700)
         self.config_frame.pack(side=LEFT, fill=Y)
 
         self.par_frame = Frame(self.config_frame, width=200, height=500)
         self.par_frame.pack(side=TOP, fill=Y)
 
-        self.control_frame = Frame(self.config_frame, width=200, height=300)
+        self.control_frame = Frame(self.config_frame, width=200, height=200)
         self.control_frame.pack(side=BOTTOM, fill=NONE)
 
 
@@ -95,15 +95,15 @@ class GUI:
         self.btn_start.grid(row=1, column=0, pady=2, sticky=E)
         self.btn_start.bind('<Button-1>', self.button_event)
 
-        self.btn_end = Button(self.control_frame, text="End", bg="red", width=15, bd=2, font=("Courier", 13))
-        self.btn_end.grid(row=2, pady=2, sticky=E)
+        # self.btn_end = Button(self.control_frame, text="End", bg="red", width=15, bd=2, font=("Courier", 13))
+        # self.btn_end.grid(row=2, pady=2, sticky=E)
 
-        self.btn_clear = Button(self.control_frame, text="Clear Traj", bg="gray", width=15, bd=2, font=("Courier", 13))
-        self.btn_clear.grid(row=3, pady=2, sticky=E)
+        self.btn_clear = Button(self.control_frame, text="Clear Traj", bg="red", width=15, bd=2, font=("Courier", 13))
+        self.btn_clear.grid(row=2, pady=2, sticky=E)
         self.btn_clear.bind('<Button-1>', self.button_event)
 
         self.btn_draw_potential = Button(self.control_frame, bg='gray', text="Potential Field", width=15, bd=2, font=("Courier", 13))
-        self.btn_draw_potential.grid(row=4, pady=2, sticky=E)
+        self.btn_draw_potential.grid(row=3, pady=2, sticky=E)
         self.btn_draw_potential.bind("<Button-1>", self.button_event)
 
         # parameter widgets
@@ -122,12 +122,12 @@ class GUI:
         self.entry_size.grid(row=ind/2, column=ind%2, pady=2, sticky=W)
         ind += 1
 
-        self.label_clock = Label(self.par_frame, text="Clock:", font=("Courier", 13))
-        self.label_clock.grid(row=ind/2, column=ind%2, pady=2, sticky=W)
-        ind += 1
-        self.entry_clock = Entry(self.par_frame, width=8, bd=2, text=self.clock, font=("Courier", 13))
-        self.entry_clock.grid(row=ind/2, column=ind%2, pady=2, sticky=W)
-        ind += 1
+        # self.label_clock = Label(self.par_frame, text="Clock:", font=("Courier", 13))
+        # self.label_clock.grid(row=ind/2, column=ind%2, pady=2, sticky=W)
+        # ind += 1
+        # self.entry_clock = Entry(self.par_frame, width=8, bd=2, text=self.clock, font=("Courier", 13))
+        # self.entry_clock.grid(row=ind/2, column=ind%2, pady=2, sticky=W)
+        # ind += 1
 
         self.label_stride = Label(self.par_frame, text="Stride:", font=("Courier", 13))
         self.label_stride.grid(row=ind/2, column=ind%2, pady=2, sticky=W)
@@ -136,12 +136,14 @@ class GUI:
         self.entry_stride.grid(row=ind/2, column=ind%2, pady=2, sticky=W)
         ind += 1
 
+        '''
         self.label_momentum = Label(self.par_frame, text="momentum:", font=("Courier", 13))
         self.label_momentum.grid(row=ind/2, column=ind%2, pady=2, sticky=W)
         ind += 1
         self.entry_momentum = Entry(self.par_frame, width=8, bd=2, text=self.momentum, font=("Courier", 13))
         self.entry_momentum.grid(row=ind/2, column=ind%2, pady=2, sticky=W)
         ind += 1
+        '''
 
         self.label_resolution = Label(self.par_frame, text="Resolution:", font=("Courier", 11))
         self.label_resolution.grid(row=ind/2, column=ind%2, pady=2, sticky=W)

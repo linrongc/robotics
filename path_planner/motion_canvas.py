@@ -32,11 +32,11 @@ class MotionCanvas(Canvas):
         self.bind("<ButtonRelease-1>", self.canvas_click_release)
         self.bind("<B1-Motion>", self.canvas_motion)
 
-        self.create_source(700, 100)
+        self.create_source(600, 100)
         print self.coords(self.sources[-1])
-        self.create_goal(100, 700)
-        self.create_circle_obstacle(300, 500, 50)
-        self.create_rect_obstacle(500, 200, 200, 150)
+        self.create_goal(100, 600)
+        self.create_circle_obstacle(300, 450, 50)
+        self.create_rect_obstacle(400, 200, 200, 150)
 
     def clear(self):
         self.pos_dic.clear()
