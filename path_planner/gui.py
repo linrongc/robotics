@@ -28,6 +28,9 @@ class GUI:
 
 
     def init_var(self):
+        """
+        Initialize the parameters
+        """
         self.alpha = DoubleVar()
         self.alpha.set(1.0)
         self.var_dic["alpha"] = self.alpha
@@ -65,6 +68,9 @@ class GUI:
         self.var_dic["momentum"] = self.momentum
 
     def init_widgets(self):
+        """
+        initialize the frames
+        """
         self.init_var()
 
         # frame initialization
@@ -86,7 +92,15 @@ class GUI:
         self.control_frame = Frame(self.config_frame, width=200, height=200)
         self.control_frame.pack(side=BOTTOM, fill=NONE)
 
+        self.init_control_frame()
+        # parameter widgets
+        self.init_par_frame()
 
+    def init_control_frame(self):
+        """
+        Initialize the widgets in control frame
+        :return: None
+        """
         # control widgets
         self.label_control = Label(self.control_frame, text="Control:", font=("Courier", 13))
         self.label_control.grid(row=0, column=0, sticky=W, pady=2)
@@ -106,10 +120,13 @@ class GUI:
         self.btn_draw_potential.grid(row=3, pady=2, sticky=E)
         self.btn_draw_potential.bind("<Button-1>", self.button_event)
 
-        # parameter widgets
-        self.init_par_frame()
+
 
     def init_par_frame(self):
+        """
+        Initialize the widgets in parameter frame
+        :return: None
+        """
         ind = 0
         self.label_config = Label(self.par_frame, text="Configuration:", font=("Courier", 13))
         self.label_config.grid(row=ind/2, column=ind%2, pady=2, columnspan=2, sticky=W)
@@ -224,6 +241,11 @@ class GUI:
         ind += 2
 
     def _center(self, toplevel):
+        """
+        Put the widget in the window center
+        :param toplevel: container
+        :return: None
+        """
         toplevel.update_idletasks()
         w = toplevel.winfo_screenwidth()
         h = toplevel.winfo_screenheight()
@@ -236,6 +258,11 @@ class GUI:
         self.root.mainloop()
 
     def button_event(self, event):
+        """
+        function to deal with button events
+        :param event: tkinter event
+        :return: None
+        """
         if event.widget == self.btn_create_block:
             print "click create obstacle button..."
             if self.block_type.get() == 1:
@@ -273,22 +300,34 @@ class GUI:
             py.plot([dict(z=potential, type="surface")])
 
     def _export_par(self):
+        """
+        export the parameters as [(par_name, par_value), ....]
+        """
         data = []
         for name, var in self.var_dic.iteritems():
             data.append((name, var.get()))
         return data
 
     def import_par(self, par_list):
+        """
+        import the parameters from [(par_name, par_value), ....]
+        """
         for name, val in par_list:
             if name in self.var_dic:
                 self.var_dic[name].set(val)
 
     def export_config(self):
+        """
+        export the configuration as a dictionary
+        """
         data = self.canvas.export_data()
         data["parameter"] = self._export_par()
         return data
 
     def save_config(self):
+        """
+        save the configuration as a json file
+        """
         print "Saving Configuration..."
         data = self.export_config()
         path = tkFileDialog.asksaveasfilename(title="Save Configuration File", defaultextension=".json")
@@ -297,6 +336,9 @@ class GUI:
                 json.dump(data, f, indent=4)
 
     def load_config(self):
+        """
+        load the configuration from file
+        """
         print "Loading Configuration..."
         path = tkFileDialog.askopenfilename(title="Open Configuration File", defaultextension=".json")
         if len(path) > 0:

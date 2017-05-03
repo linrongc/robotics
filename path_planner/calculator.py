@@ -28,6 +28,11 @@ class LinearCalculator(Calculator):
         super(LinearCalculator, self).__init__()
 
     def get_force(self, par, pos):
+        """
+        :param par: goal position
+        :param pos: [x, y]
+        :return: force [fx, fy]
+        """
         vec = par[:2] - pos[:2]
         dis = l2_dis(vec)
         if dis > self.accept_zone:
@@ -36,6 +41,11 @@ class LinearCalculator(Calculator):
             return np.array((0., 0.))
 
     def get_potential(self, par, pos):
+        """
+        :param par: goal position
+        :param pos: [x, y]
+        :return: potential
+        """
         vec = par[:2] - pos[:2]
         dis = l2_dis(vec)
         if dis > self.accept_zone:
@@ -51,6 +61,11 @@ class CircleCalculator(Calculator):
         super(CircleCalculator, self).__init__()
 
     def get_force(self, par, pos):
+        """
+        :param par:  the parameter of rectangle [x_c, y_c, r]
+        :param pos: [x, y, r]
+        :return: force [fx, fy]
+        """
         center = par[:2]
         radius = par[2]
         vec = pos[:2] - center
@@ -61,6 +76,11 @@ class CircleCalculator(Calculator):
         return force*vec/(dis + radius)
 
     def get_potential(self, par, pos):
+        """
+        :param par: par: the parameter of rectangle [x, y, r]
+        :param pos: [x, y]
+        :return: potential
+        """
         center = par[:2]
         radius = par[2]
         dis = euclidean(center, pos[:2]) - radius - pos[2]
@@ -71,12 +91,20 @@ class CircleCalculator(Calculator):
 
 
 class RectangleCalculator(Calculator):
+    """
+        Calculator for Rectangles
+    """
 
     def __init__(self, alpha=1.0):
         self.alpha = alpha
         super(RectangleCalculator, self).__init__()
 
     def get_closest_vector(self, par, pos):
+        """
+        :param par:  the parameter of rectangle [x0, y0, x1, y1]
+        :param pos: [x, y]
+        :return: shortest vector from rectangle to the position
+        """
         def get_pos(x, low, high):
            if x < low:
                return x - low
@@ -86,6 +114,11 @@ class RectangleCalculator(Calculator):
         return np.array((get_pos(pos[0], par[0], par[2]), get_pos(pos[1], par[1], par[3])))
 
     def get_force(self, par, pos):
+        """
+        :param par: the parameter of rectangle [x0, y0, x1, y1]
+        :param pos: [x, y, size]
+        :return: force [fx, fy]
+        """
         vec = self.get_closest_vector(par, pos)
         dis = l2_dis(vec) - pos[2]
         if dis <= 0:
@@ -96,21 +129,17 @@ class RectangleCalculator(Calculator):
             return force + 0.1*np.array((force[1], -force[0]))
 
     def get_potential(self, par, pos):
+        """
+        :param par: par: the parameter of rectangle [x0, y0, x1, y1]
+        :param pos: [x, y]
+        :return: potential
+        """
         vec = self.get_closest_vector(par, pos)
         dis = l2_dis(vec) - pos[2]
         if dis <= 0:
             return self.alpha
         else:
             return self.alpha*np.exp(-dis)
-
-
-class VectorCalculator(Calculator):
-
-    def __init__(self, circles, rects, width=800, height=800):
-        Calculator.__init__(self)
-        fields = np.zeros((width, height))
-        for circle in circles:
-            pass
 
 
 

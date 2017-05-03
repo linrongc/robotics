@@ -5,6 +5,7 @@
 @author = Rongcheng
 """
 from calculator import *
+import time
 
 
 class PotentialPlanner:
@@ -23,6 +24,9 @@ class PotentialPlanner:
         self.calculator_dic = {}
 
     def reload_calculator_dic(self):
+        """
+        loading the environment for calculation
+        """
         self.calculator_dic = {"circle_obstacle":[self.circle_obstacles, self.circle_calculator],
                            "rectangle_obstacle":[self.rectangle_obstacles, self.rect_calculator],
                            "goal":[self.goals, self.goal_calculator],
@@ -30,16 +34,22 @@ class PotentialPlanner:
                            }
 
     def calculate_force(self, pos):
+        """
+        calculate the force from all objects
+        """
         force = np.array((0., 0.))
         r = self.par_dic["resolution"]
         for name, (objects, calculator) in self.calculator_dic.iteritems():
-            if name == "source":
+            if name == "source":  # exclude the force from other source
                 continue
             for obj_par in objects:
                 force += calculator.get_force(np.array(obj_par)/r, np.array(pos + [self.par_dic["ball_size"]])/r)
         return force
 
     def calculate_potential(self, pos):
+        """
+        calculate the potential at position (x, y)
+        """
         potential = 0.
         r = self.par_dic["resolution"]
         for objects, calculator in self.calculator_dic.values():
@@ -48,6 +58,9 @@ class PotentialPlanner:
         return potential
 
     def load_configuration(self, config):
+        """
+        load the environment configuration
+        """
         self.circle_obstacles = config["circle_obstacles"]
         self.rectangle_obstacles = config["rectangle_obstacles"]
         self.sources =config["sources"]
@@ -61,9 +74,15 @@ class PotentialPlanner:
         self.reload_calculator_dic()
 
     def update_source_dic(self, pos):
+        """
+        update the source position in calculation dictionary
+        """
         self.calculator_dic["source"][0] = [p[:2] + [self.par_dic["ball_size"]] for p in pos]
 
     def get_nearest_dis(self, pos):
+        """
+        get the nearest distance from any goals
+        """
         if len(self.goals) > 0:
             nearest = euclidean(np.array(self.goals[0][:2]), np.array(pos[:2]))
             for n in range(1, len(self.goals)):
@@ -75,10 +94,14 @@ class PotentialPlanner:
             return None
 
     def generate_path(self):
+        """
+        generate path from
+        """
         path = [[sour[:2] for sour in self.sources]]
         move = 10
         delta = self.par_dic["stride"] * self.par_dic["resolution"]
         count = 0
+        start = time.time()
         while move > 1e-3 and count < 1000:
             move = 0
             sour_pos = path[-1]
@@ -96,9 +119,14 @@ class PotentialPlanner:
             count += 1
             self.update_source_dic(dest_pos)
             path.append(dest_pos)
+        end = time.time()
+        print "planning time: ", end - start
         return path
 
     def get_potential_field(self):
+        """
+        get the potential fields as a 2d array
+        """
         ticks = np.linspace(0, 700, 700/self.par_dic["resolution"])
         num_ticks = len(ticks)
         potential = np.zeros((num_ticks, num_ticks), dtype=np.float64)

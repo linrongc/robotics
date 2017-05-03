@@ -39,6 +39,10 @@ class MotionCanvas(Canvas):
         self.create_rect_obstacle(400, 200, 200, 150)
 
     def clear(self):
+        """
+        clear all the objects in canvas
+        :return: None
+        """
         self.pos_dic.clear()
         self.name_dic.clear()
         widget_list = [self.sources, self.goals, self.rect_obstacles, self.circle_obstacles, self.trajectory]
@@ -48,6 +52,11 @@ class MotionCanvas(Canvas):
                 self.delete_widget(item)
 
     def import_data(self, data):
+        """
+        import configuration from a dictionary
+        :param data: {"name": [val, val...]...}
+        :return: None
+        """
         self.clear()
         for coord in data["rectangle_obstacles"]:
             self.create_rect_obstacle((coord[2] + coord[0])/2, (coord[3] + coord[1])/2, width=(coord[2] - coord[0]),
@@ -60,6 +69,9 @@ class MotionCanvas(Canvas):
             self.create_goal(*par)
 
     def export_data(self):
+        """
+        export current configuration as dictionary
+        """
         data = {
             "sources": self._export_triangle(self.sources),
             "goals": self._export_triangle(self.goals),
@@ -69,12 +81,18 @@ class MotionCanvas(Canvas):
         return data
 
     def _export_rectangle(self, items):
+        """
+        export rectangle from canvas
+        """
         data = []
         for rect in items:
             data.append(self.coords(rect))
         return data
 
     def _export_triangle(self, items):
+        """
+        export triangle from canvas
+        """
         data = []
         for tri in items:
             coord = self.coords(tri)
@@ -82,6 +100,9 @@ class MotionCanvas(Canvas):
         return data
 
     def _export_circle(self, items):
+        """
+        export circle form canvas
+        """
         data = []
         for circle in items:
             coord = self.coords(circle)
@@ -89,6 +110,13 @@ class MotionCanvas(Canvas):
         return data
 
     def create_source(self, x, y, size=20):
+        """
+        Add a source to canvas
+        :param x: x
+        :param y: y
+        :param size: radius
+        :return:
+        """
         print "creating source..."
         source = self.create_triangle(x, y, size=size, fill="green")
         self.sources.append(source)
@@ -103,6 +131,12 @@ class MotionCanvas(Canvas):
         self.task = ""
 
     def create_circle_obstacle(self, x, y, r=10):
+        """
+        :param x: x
+        :param y: x
+        :param r: radius
+        :return: None
+        """
         print "creating circle..."
         self.record_pos = (x, y)
         circle = self.create_circle(x, y, r=r, fill="gray")
@@ -110,6 +144,13 @@ class MotionCanvas(Canvas):
         self.circle_obstacles.append(circle)
 
     def create_rect_obstacle(self, x, y, width=10, height=10):
+        """
+        :param x: x
+        :param y: y
+        :param width: width
+        :param height: height
+        :return: None
+        """
         print "creating rectangle..."
         self.record_pos = (x, y)
         rect = self.create_rectangle(x - width/2, y - height/2, x + width/2, y + height/2, fill="gray")
@@ -118,6 +159,9 @@ class MotionCanvas(Canvas):
         self.rect_obstacles.append(rect)
 
     def canvas_click(self, event):
+        """
+        deal with the left click events in canvas
+        """
         if self.task == "obstacle_circle":
             self.create_circle_obstacle(event.x, event.y)
         elif self.task == "obstacle_rectangle":
@@ -128,6 +172,9 @@ class MotionCanvas(Canvas):
             self.create_goal(event.x, event.y)
 
     def canvas_keyboard(self, event):
+        """
+        deal with the keyboard events in canvas
+        """
         if event.keysym =="Delete" or event.keysym == "BackSpace":
             try:
                 widget = event.widget.find_closest(event.x, event.y)[0]
@@ -136,6 +183,9 @@ class MotionCanvas(Canvas):
                 pass
 
     def delete_widget(self, widget):
+        """
+        delete a widget from canvas
+        """
         print "delete widget: ", str(widget)
         self.delete(widget)
         if widget in self.sources:
@@ -150,6 +200,9 @@ class MotionCanvas(Canvas):
             self.trajectory.remove(widget)
 
     def canvas_click_release(self, event):
+        """
+        deal with the left click release event
+        """
         if self.task.startswith("obstacle") and self.record_pos is not None:
             '''
             target = self.obstacles[-1]
@@ -161,6 +214,9 @@ class MotionCanvas(Canvas):
             self.task = ""
 
     def canvas_motion(self, event):
+        """
+        deal with the left clicked mouse motion event
+        """
         if self.task == "obstacle_circle" and self.record_pos is not None:
             target = self.circle_obstacles[-1]
             (x, y) = self.record_pos
@@ -177,6 +233,9 @@ class MotionCanvas(Canvas):
         self.focus_set()
 
     def create_triangle(self, x, y, size=10, fill="red"):
+        """
+        create a triangle in canvas
+        """
         triangle= self.create_polygon([
             x , y - size,
             x + int(1.73*size/2), y + size/2 ,
@@ -186,17 +245,26 @@ class MotionCanvas(Canvas):
         return triangle
 
     def create_circle(self, x, y, r=10, **kwargs):
+        """
+        creat a circle in canvas
+        """
         circle = self.create_oval(x-r, y-r, x+r, y+r, **kwargs)
         self.enable_moving(circle)
         return circle
 
     def on_click(self, event):
+        """
+        deal with left click on widget
+        """
         widget = event.widget.find_closest(event.x, event.y)[0]
         self.itemconfig(widget, outline="green")
         self.pos_dic[widget] = (event.x, event.y)
         self.gui.set_status("click on " + self.name_dic[widget])
 
     def on_click_release(self, event):
+        """
+        deal with left click release event on widget
+        """
         try:
             widget = event.widget.find_closest(event.x, event.y)[0]
             self.itemconfig(widget, outline="blue")
@@ -206,6 +274,9 @@ class MotionCanvas(Canvas):
             pass
 
     def on_motion(self, event):
+        """
+        deal with left clicked motion event on widget
+        """
         widget = event.widget.find_closest(event.x, event.y)[0]
         if widget in self.pos_dic:
             pre = self.pos_dic[widget]
@@ -214,14 +285,23 @@ class MotionCanvas(Canvas):
             self.pos_dic[widget] = current
 
     def enable_moving(self, widget):
+        """
+        binding the widget with left-click, left-click release and left-clicked mouse motion events
+        """
         self.tag_bind(widget, '<Button-1>', self.on_click)
         self.tag_bind(widget, '<ButtonRelease-1>', self.on_click_release)
         self.tag_bind(widget, '<B1-Motion>', self.on_motion)
 
     def draw_trajectory(self, path):
+        """
+        draw the trajectory
+        """
         line = self.create_line(*path, fill="green")
         self.trajectory.append(line)
 
     def clear_trajectory(self):
+        """
+        clear all the trajectories in canvas
+        """
         for traj in self.trajectory[:]:
             self.delete_widget(traj)
